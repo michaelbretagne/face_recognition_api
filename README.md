@@ -18,4 +18,18 @@ The **goal** here is to jump into an existing project and **implement new featur
   - Create Users and Login tables
   - Run client and server script
 
-- Implement new features:
+- Implement new feature (multiple face detection):
+
+  - Setup a new remote
+  - Create a new branch
+  - Switch to the new branch
+  - Implement new feature
+  - Commit changes and push branch
+  - Compare and create pull request
+  - Merge pull request
+  - Switch to master branch
+  - Delete merged branch locally and remotely
+
+- Add Docker to project
+  - Create Dockerfile
+  - Create docker-compose.yml
