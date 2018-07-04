@@ -30,6 +30,13 @@ The **goal** here is to jump into an existing project and **implement new featur
   - Switch to master branch
   - Delete merged branch locally and remotely
 
-- Add Docker to project
+- Add Docker to project:
+
   - Create Dockerfile
-  - Create docker-compose.yml
+  - Create docker-compose.yml and add backend API setup
+
+- Add PosgreSQL to docker:
+
+  - Add postgreSQL setup to docker-compose.yml
+  - Add postgres folder. Create seed and tables sql files
+  - Create postgreSQL schema
