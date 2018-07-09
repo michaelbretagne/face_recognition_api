@@ -1,9 +1,15 @@
-const handleSignin = (db, bcrypt) => (req, res) => {
+const jwt = require("jsonwebtoken");
+const redis = require("redis");
+const redisClient = redis.createClient(process.env.REDIS_URI);
+require("dotenv").config();
+
+const handleSignin = (db, bcrypt, req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json("incorrect form submission");
+    return Promise.reject("incorrect form submission");
   }
-  db.select("email", "hash")
+  return db
+    .select("email", "hash")
     .from("login")
     .where("email", "=", email)
     .then(data => {
@@ -13,17 +19,57 @@ const handleSignin = (db, bcrypt) => (req, res) => {
           .select("*")
           .from("users")
           .where("email", "=", email)
-          .then(user => {
-            res.json(user[0]);
-          })
-          .catch(err => res.status(400).json("unable to get user"));
+          .then(user => user[0])
+          .catch(err => Promise.reject("unable to get user"));
       } else {
-        res.status(400).json("wrong credentials");
+        Promise.reject("wrong credentials");
       }
     })
-    .catch(err => res.status(400).json("wrong credentials"));
+    .catch(err => Promise.reject.json("wrong credentials"));
+};
+
+const getAuthTokenId = (req, res) => {
+  const { authorization } = req.headers;
+  return redisClient.get(authorization, (err, reply) => {
+    if (err || !reply) {
+      return res.status(400).json("Unauthorized");
+    }
+    return res.json({ id: reply });
+  });
+};
+
+// You must create your own JWTSECRET passphrase into an .env file
+const signToken = email => {
+  const jwtPayload = { email };
+  return jwt.sign(jwtPayload, process.env.JWTSECRET, { expiresIn: "2 days" });
+};
+
+const setToken = (key, value) => {
+  return Promise.resolve(redisClient.set(key, value));
+};
+
+const createSessions = user => {
+  const { email, id } = user;
+  const token = signToken(email);
+  return setToken(token, id).then(() => {
+    return { success: "true", userID: id, token };
+  });
+};
+
+const signinAuthentication = (db, bcrypt) => (req, res) => {
+  const { authorization } = req.headers;
+  return authorization
+    ? getAuthTokenId(req, res)
+    : handleSignin(db, bcrypt, req, res)
+        .then(data => {
+          return data.id && data.email
+            ? createSessions(data)
+            : Promise.reject(data);
+        })
+        .then(session => res.json(session))
+        .catch(err => res.status(400).json(err));
 };
 
 module.exports = {
-  handleSignin: handleSignin,
+  signinAuthentication: signinAuthentication,
 };
