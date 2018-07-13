@@ -1,9 +1,9 @@
 BEGIN TRANSACTION;
 
 insert into users
-  (name, email, entries, joined)
+  (name, age, country, email, entries, joined)
 values
-  ('a', 'a@a.com', 5, '2018-01-01');
+  ('a', 33, 'Spain', 'a@a.com', 5, '2018-01-01');
 insert into login
   (hash, email)
 values
