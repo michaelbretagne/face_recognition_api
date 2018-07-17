@@ -40,3 +40,11 @@ The **goal** here is to jump into an existing project and **implement new featur
   - Add postgreSQL setup to docker-compose.yml
   - Add postgres folder. Create seed and tables sql files
   - Create postgreSQL schema
+
+- Add Redis To Docker Compose
+
+- Add secure user authentication:
+
+  - Create JSON Web Token for user
+  - Store token in a REDIS database
+  - Add Authorization Middleware for routes that need authentication
