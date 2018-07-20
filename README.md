@@ -48,3 +48,10 @@ The **goal** here is to jump into an existing project and **implement new featur
   - Create JSON Web Token for user
   - Store token in a REDIS database
   - Add Authorization Middleware for routes that need authentication
+
+- Incorporate AWS to add rank badge feature:
+
+  - Create aws lambda user
+  - Create lambda function
+  - Use serverless framework to get the amazon lambda function
+  - Connect front-end app to lambda function
